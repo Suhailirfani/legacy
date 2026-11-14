@@ -64,12 +64,13 @@
                         <div class="col-8">
                             <label class="form-label d-block text-muted" style="font-size: 0.62rem; margin-bottom: 0.15rem;">Quick Presets (mm)</label>
                             <div class="d-flex flex-wrap gap-1">
+                                <span class="thickness-chip" data-val="0.28">.28</span>
                                 <span class="thickness-chip" data-val="0.30">.30</span>
                                 <span class="thickness-chip" data-val="0.35">.35</span>
+                                <span class="thickness-chip" data-val="0.37">.37</span>
                                 <span class="thickness-chip" data-val="0.40">.40</span>
                                 <span class="thickness-chip" data-val="0.45">.45</span>
                                 <span class="thickness-chip" data-val="0.50">.50</span>
-                                <span class="thickness-chip" data-val="2.30">2.3</span>
                             </div>
                         </div>
                     </div>
@@ -326,7 +327,8 @@ document.addEventListener('DOMContentLoaded', function () {
         cardProductDisplay.textContent = product;
         cardDateDisplay.textContent = dateVal;
         cardThicknessDisplay.textContent = thickness.toFixed(2);
-        cardWeightDisplay.textContent = weight10ft.toFixed(2);
+        const weightDecimals = (weight10ft.toString().split('.')[1] || '').length;
+        cardWeightDisplay.textContent = weightDecimals > 2 ? weight10ft.toString() : weight10ft.toFixed(2);
         const refProd = product.replace(/[^a-zA-Z0-9]/g, '').substring(0, 3).toUpperCase() || 'RC';
         cardRefCode.textContent = `RC-${refProd}-${thickness.toFixed(2)}`;
 

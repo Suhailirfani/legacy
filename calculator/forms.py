@@ -34,17 +34,17 @@ class RateCalculationForm(forms.ModelForm):
                 attrs={
                     'class': 'form-control',
                     'placeholder': 'e.g. 0.35, 2.30',
-                    'step': '0.01',
-                    'min': '0.01',
+                    'step': 'any',
+                    'min': '0.001',
                     'id': 'input-thickness',
                 }
             ),
             'weight_10ft': forms.NumberInput(
                 attrs={
                     'class': 'form-control',
-                    'placeholder': 'e.g. 8.4',
-                    'step': '0.01',
-                    'min': '0.01',
+                    'placeholder': 'e.g. 8.425',
+                    'step': 'any',
+                    'min': '0.0001',
                     'id': 'input-weight',
                 }
             ),
@@ -52,7 +52,7 @@ class RateCalculationForm(forms.ModelForm):
                 attrs={
                     'class': 'form-control',
                     'placeholder': 'e.g. 75.00',
-                    'step': '0.01',
+                    'step': 'any',
                     'min': '0.01',
                     'id': 'input-landing-rate',
                 }

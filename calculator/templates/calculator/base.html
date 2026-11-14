@@ -188,6 +188,24 @@
             box-sizing: border-box;
         }
 
+        .rc-brand-header {
+            background-color: #ffffff;
+            border-bottom: 1.5px solid #e2e8f0;
+            padding: 0.35rem 0.65rem;
+        }
+
+        .rc-logo-wefive {
+            height: 34px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .rc-logo-legacy, .rc-logo-halten {
+            height: 20px;
+            width: auto;
+            object-fit: contain;
+        }
+
         .rc-header {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 65%, #1e3a8a 100%);
             color: #ffffff;
@@ -649,8 +667,8 @@
     <nav class="navbar navbar-dark navbar-custom py-2 px-1">
         <div class="container-fluid px-2 px-md-3 d-flex align-items-center justify-content-between">
             <a class="navbar-brand navbar-brand-custom text-white py-0 me-3 d-flex align-items-center gap-2" href="{% url 'dashboard' %}">
-                <img src="/static/calculator/icons/icon-64.png" alt="Logo" width="24" height="24" class="rounded shadow-sm">
-                <span class="fs-6 fw-bold">Roofing Margin & Rate Card</span>
+                <img src="/static/calculator/img/logo_wefive_group.png" alt="We Five Group" height="28" class="bg-white rounded px-1 py-0.5 shadow-sm">
+                <span class="fs-6 fw-bold">We Five • Legacy Roofing</span>
                 <span class="badge bg-light text-dark ms-2 fw-semibold d-none d-sm-inline-block" style="font-size: 0.62rem;">PRO CALC</span>
             </a>
             <div class="d-flex align-items-center gap-2 gap-sm-3 ms-auto">

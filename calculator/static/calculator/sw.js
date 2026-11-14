@@ -1,12 +1,15 @@
 // Roofing Calculator Service Worker
-// Version 9: DD-MM-YYYY date format
-const CACHE_NAME = 'roofing-calc-v9';
+// Version 10: Official We Five Group, Legacy, and Halten logos
+const CACHE_NAME = 'roofing-calc-v10';
 const STATIC_ASSETS = [
   '/manifest.json',
   '/static/calculator/manifest.json',
   '/static/calculator/icons/icon-64.png',
   '/static/calculator/icons/icon-192.png',
   '/static/calculator/icons/icon-512.png',
+  '/static/calculator/img/logo_wefive_group.png',
+  '/static/calculator/img/logo_legacy.png',
+  '/static/calculator/img/logo_halten.png',
   'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css',
   'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css',
   'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js',

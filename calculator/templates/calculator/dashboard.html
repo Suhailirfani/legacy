@@ -42,6 +42,8 @@
                             </label>
                             {{ form.product }}
                             <datalist id="product-presets">
+                                <option value="LEGACY">
+                                <option value="HALTEN">
                                 <option value="JINDAL">
                                 <option value="Sakthi">
                                 <option value="Duramet">
@@ -144,6 +146,18 @@
                 <!-- Mobile card form factor: 100% identical in viewing and downloading -->
                 <div id="rate-card-capture">
                     
+                    <!-- Corporate Branding Header (We Five Group on Left, Legacy & Halten on Right) -->
+                    <div class="rc-brand-header bg-white px-2.5 py-1.5 border-bottom d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <img src="/static/calculator/img/logo_wefive_group.png" alt="We Five Group" height="36" class="rc-logo-wefive">
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <img src="/static/calculator/img/logo_legacy.png" alt="Legacy Roofing" height="20" class="rc-logo-legacy">
+                            <div class="vr my-1" style="height: 18px; opacity: 0.25;"></div>
+                            <img src="/static/calculator/img/logo_halten.png" alt="Halten Roofing" height="20" class="rc-logo-halten">
+                        </div>
+                    </div>
+
                     <!-- Header Banner -->
                     <div class="rc-header">
                         <div class="d-flex justify-content-between align-items-center">

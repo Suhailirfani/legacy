@@ -104,13 +104,10 @@
                         <div><i class="bi bi-aspect-ratio text-info me-1"></i>10ft = 36 Sq.Ft</div>
                     </div>
 
-                    <!-- Row 5: Action Buttons -->
-                    <div class="d-flex gap-2 pt-1">
-                        <button type="submit" id="btn-calculate" class="btn btn-brand-primary flex-grow-1 shadow-sm">
+                    <!-- Row 5: Action Button (Calculates & Automatically Saves to Records) -->
+                    <div class="pt-1">
+                        <button type="submit" id="btn-calculate" class="btn btn-brand-primary w-100 shadow-sm py-2">
                             <i class="bi bi-cpu me-1"></i> Calculate Card
-                        </button>
-                        <button type="button" id="btn-save-history" class="btn btn-brand-save flex-grow-1 shadow-sm">
-                            <i class="bi bi-bookmark-check-fill me-1"></i> Save to Records
                         </button>
                     </div>
                 </form>
@@ -274,7 +271,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Action buttons
     const btnCalculate = document.getElementById('btn-calculate');
-    const btnSaveHistory = document.getElementById('btn-save-history');
     const btnReset = document.getElementById('btn-reset');
     const btnDownloadPng = document.getElementById('btn-download-png');
     const btnCopyCard = document.getElementById('btn-copy-card');
@@ -384,76 +380,10 @@ document.addEventListener('DOMContentLoaded', function () {
         performRealtimeCalculation();
     });
 
-    // Save to History button (AJAX save with instant feedback)
-    btnSaveHistory.addEventListener('click', async function () {
-        const product = inputProduct.value.trim();
-        const thickness = parseFloat(inputThickness.value);
-        const weight = parseFloat(inputWeight.value);
-        const landingRate = parseFloat(inputLandingRate.value);
-        const dateVal = inputDate.value;
-
-        if (!product) {
-            alert('Please enter a product name.');
-            inputProduct.focus();
-            return;
-        }
-        if (isNaN(thickness) || thickness <= 0) {
-            alert('Please enter a valid thickness.');
-            inputThickness.focus();
-            return;
-        }
-        if (isNaN(weight) || weight <= 0) {
-            alert('Please enter a valid 10ft sheet weight (kg).');
-            inputWeight.focus();
-            return;
-        }
-        if (isNaN(landingRate) || landingRate <= 0) {
-            alert('Please enter a valid basic purchase rate (₹/kg).');
-            inputLandingRate.focus();
-            return;
-        }
-
-        btnSaveHistory.disabled = true;
-        btnSaveHistory.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Saving...';
-
-        try {
-            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-            const payload = {
-                product: product,
-                thickness: thickness,
-                weight_10ft: weight,
-                landing_rate: landingRate,
-                date: dateVal
-            };
-
-            const response = await fetch('/api/save/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken
-                },
-                body: JSON.stringify(payload)
-            });
-
-            const resData = await response.json();
-            if (response.ok && resData.status === 'success') {
-                // Update badge
-                const badge = document.getElementById('saved-count-badge');
-                if (badge) {
-                    badge.textContent = parseInt(badge.textContent || '0') + 1;
-                }
-                alert('Saved successfully! You can view and manage all saved calculations in "Saved Records".');
-            } else {
-                alert('Error saving calculation: ' + JSON.stringify(resData.errors || resData.error));
-            }
-        } catch (err) {
-            console.error(err);
-            formAction.value = 'save';
-            calcForm.submit();
-        } finally {
-            btnSaveHistory.disabled = false;
-            btnSaveHistory.innerHTML = '<i class="bi bi-bookmark-check-fill me-1"></i> Save to Records';
-        }
+    // Automatically calculate and save to records on form submit
+    calcForm.addEventListener('submit', function () {
+        btnCalculate.disabled = true;
+        btnCalculate.innerHTML = '<span class="spinner-border spinner-border-sm me-1.5"></span> Calculating & Saving...';
     });
 
     // Download Rate Card as Image (PNG) - EXACTLY IDENTICAL TO MOBILE CARD VIEW

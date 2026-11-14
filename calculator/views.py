@@ -63,53 +63,20 @@ def dashboard_view(request):
                 'tier_pairs': make_tier_pairs(tier_list),
                 'is_saved': True,
             }
-            messages.info(request, f"Loaded saved calculation for '{target_calc.product}' ({target_calc.thickness}mm).")
+            if not request.GET.get('saved'):
+                messages.info(request, f"Loaded saved calculation for '{target_calc.product}' ({target_calc.thickness}mm).")
         except RateCalculation.DoesNotExist:
             pass
 
     if request.method == 'POST':
-        action = request.POST.get('action', 'calculate')
         form = RateCalculationForm(request.POST)
 
         if form.is_valid():
-            product = form.cleaned_data['product']
-            thickness = form.cleaned_data['thickness']
-            weight_10ft = form.cleaned_data['weight_10ft']
-            landing_rate = form.cleaned_data['landing_rate']
-            date_val = form.cleaned_data['date']
-
             try:
-                calc_results = compute_rate_card(
-                    landing_rate=landing_rate,
-                    weight_10ft=weight_10ft
-                )
-
-                if action == 'save':
-                    instance = form.save()
-                    messages.success(request, f"Rate card for '{instance.product}' saved successfully!")
-                    return redirect(f"/?load={instance.id}")
-                else:
-                    tier_list = calc_results['tier_rates_list']
-                    preview_data = {
-                        'id': None,
-                        'date': date_val.strftime('%Y-%m-%d'),
-                        'product': product,
-                        'thickness': float(thickness),
-                        'weight_10ft': float(weight_10ft),
-                        'landing_rate': float(landing_rate),
-                        'rate_incl_gst': calc_results['rate_incl_gst'],
-                        'ton_rate': calc_results['ton_rate'],
-                        'sheets_per_ton': calc_results['sheets_per_ton'],
-                        'sqft_per_ton': calc_results['sqft_per_ton'],
-                        'cost_per_sqft': calc_results['cost_per_sqft'],
-                        'tier_rates': calc_results['tier_rates'],
-                        'tier_list': tier_list,
-                        'tier_row1': tier_list[:5],
-                        'tier_row2': tier_list[5:],
-                        'tier_pairs': make_tier_pairs(tier_list),
-                        'is_saved': False,
-                    }
-                    messages.info(request, "Calculation updated successfully.")
+                # Automatically save calculation to database when calculate button is clicked
+                instance = form.save()
+                messages.success(request, f"Rate card for '{instance.product}' ({instance.thickness}mm) calculated & saved to records!")
+                return redirect(f"/?load={instance.id}&saved=1")
             except Exception as e:
                 messages.error(request, f"Calculation error: {str(e)}")
 

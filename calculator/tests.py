@@ -84,6 +84,21 @@ class ViewsAndApiTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertFalse(RateCalculation.objects.filter(pk=self.calc.id).exists())
 
+    def test_dashboard_post_saves_calculation_automatically(self):
+        initial_count = RateCalculation.objects.count()
+        response = self.client.post(reverse('dashboard'), data={
+            'product': 'Duramet Test',
+            'thickness': '0.40',
+            'weight_10ft': '9.25',
+            'landing_rate': '82.50',
+            'date': '2026-11-14',
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(RateCalculation.objects.count(), initial_count + 1)
+        saved = RateCalculation.objects.get(product='Duramet Test')
+        self.assertEqual(float(saved.thickness), 0.40)
+        self.assertEqual(saved.weight_10ft, 9.25)
+
     def test_pwa_manifest_json(self):
         response = self.client.get(reverse('pwa_manifest'))
         self.assertEqual(response.status_code, 200)

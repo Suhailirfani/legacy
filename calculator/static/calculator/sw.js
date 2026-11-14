@@ -1,6 +1,6 @@
 // Roofing Calculator Service Worker
-// Version 6: Updated quick presets and liberalized weight precision
-const CACHE_NAME = 'roofing-calc-v6';
+// Version 7: Unified Calculate & Auto-Save
+const CACHE_NAME = 'roofing-calc-v7';
 const STATIC_ASSETS = [
   '/manifest.json',
   '/static/calculator/manifest.json',

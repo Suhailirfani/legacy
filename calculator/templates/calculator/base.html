@@ -188,28 +188,62 @@
             box-sizing: border-box;
         }
 
-        .rc-brand-header {
-            background-color: #ffffff;
-            border-bottom: 1.5px solid #e2e8f0;
-            padding: 0.35rem 0.65rem;
+        /* UNIFIED BLENDED RATE CARD HEADER */
+        .rc-blended-header {
+            position: relative;
+            background: #ffffff;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            overflow: hidden;
+        }
+
+        .rc-brand-strip, .rc-brand-header {
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            padding: 0.45rem 0.75rem 0.4rem 0.75rem;
         }
 
         .rc-logo-wefive {
-            height: 34px;
+            height: 36px;
+            max-height: 36px;
             width: auto;
             object-fit: contain;
+            display: block;
         }
 
-        .rc-logo-legacy, .rc-logo-halten {
+        .rc-sub-brand-badge {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 7px;
+            padding: 0.22rem 0.55rem;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+        }
+
+        .rc-logo-legacy {
             height: 20px;
+            max-height: 20px;
             width: auto;
             object-fit: contain;
         }
 
-        .rc-header {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 65%, #1e3a8a 100%);
+        .rc-logo-halten {
+            height: 19px;
+            max-height: 19px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* Sleek metallic/gradient blend divider */
+        .rc-accent-line {
+            height: 3px;
+            background: linear-gradient(90deg, #0284c7 0%, #10b981 50%, #38bdf8 100%);
+            width: 100%;
+        }
+
+        /* Product Title & Date Banner */
+        .rc-title-banner, .rc-header {
+            background: linear-gradient(135deg, #091e3a 0%, #11284b 55%, #1e3a8a 100%);
+            padding: 0.52rem 0.8rem;
             color: #ffffff;
-            padding: 0.5rem 0.8rem;
         }
 
         .rc-brand-pill {
@@ -226,12 +260,31 @@
         }
 
         .rc-title {
-            font-size: 1.35rem;
+            font-size: 1.32rem;
             font-weight: 800;
             color: #ffffff;
-            margin: 0.15rem 0 0 0;
-            letter-spacing: -0.01em;
-            line-height: 1.2;
+            margin: 0;
+            line-height: 1.15;
+            letter-spacing: -0.015em;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+        }
+
+        .rc-date-chip {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #f8fafc;
+            font-weight: 700;
+            font-size: 0.72rem;
+            padding: 0.18rem 0.55rem;
+            border-radius: 12px;
+            white-space: nowrap;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .rc-date-chip i {
+            color: #fbbf24;
         }
 
         .rc-meta-strip {
@@ -476,12 +529,33 @@
                 border-radius: 10px !important;
             }
 
-            .rc-header {
-                padding: 0.55rem 0.75rem !important;
+            .rc-brand-strip, .rc-brand-header {
+                padding: 0.35rem 0.65rem !important;
+            }
+
+            .rc-title-banner, .rc-header {
+                padding: 0.45rem 0.65rem !important;
             }
 
             .rc-title {
                 font-size: 1.15rem !important;
+            }
+
+            .rc-logo-wefive {
+                height: 31px !important;
+            }
+
+            .rc-logo-legacy {
+                height: 17px !important;
+            }
+
+            .rc-logo-halten {
+                height: 16px !important;
+            }
+
+            .rc-date-chip {
+                font-size: 0.68rem !important;
+                padding: 0.14rem 0.45rem !important;
             }
 
             .rc-brand-pill {
@@ -552,11 +626,34 @@
             box-shadow: none !important;
             border-radius: 12px !important;
         }
+        .rate-card-canonical .rc-blended-header {
+            border-top-left-radius: 10px !important;
+            border-top-right-radius: 10px !important;
+        }
+        .rate-card-canonical .rc-brand-strip,
+        .rate-card-canonical .rc-brand-header {
+            padding: 0.45rem 0.75rem 0.4rem 0.75rem !important;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+        }
+        .rate-card-canonical .rc-logo-wefive {
+            height: 36px !important;
+        }
+        .rate-card-canonical .rc-logo-legacy {
+            height: 20px !important;
+        }
+        .rate-card-canonical .rc-logo-halten {
+            height: 19px !important;
+        }
+        .rate-card-canonical .rc-title-banner,
         .rate-card-canonical .rc-header {
-            padding: 0.65rem 0.9rem !important;
+            padding: 0.52rem 0.8rem !important;
         }
         .rate-card-canonical .rc-title {
-            font-size: 1.35rem !important;
+            font-size: 1.32rem !important;
+        }
+        .rate-card-canonical .rc-date-chip {
+            font-size: 0.72rem !important;
+            padding: 0.18rem 0.55rem !important;
         }
         .rate-card-canonical .rc-brand-pill {
             font-size: 0.65rem !important;

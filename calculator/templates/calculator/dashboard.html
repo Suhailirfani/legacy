@@ -146,26 +146,30 @@
                 <!-- Mobile card form factor: 100% identical in viewing and downloading -->
                 <div id="rate-card-capture">
                     
-                    <!-- Corporate Branding Header (We Five Group on Left, Legacy & Halten on Right) -->
-                    <div class="rc-brand-header bg-white px-2.5 py-1.5 border-bottom d-flex justify-content-between align-items-center">
-                        <div class="d-flex align-items-center">
-                            <img src="/static/calculator/img/logo_wefive_group.png" alt="We Five Group" height="36" class="rc-logo-wefive">
+                    <!-- UNIFIED BLENDED HEADER (Brand Strip + Metallic Accent + Title Banner) -->
+                    <div class="rc-blended-header">
+                        <!-- Top Brand Strip -->
+                        <div class="rc-brand-strip d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <img src="/static/calculator/img/logo_wefive_group.png" alt="We Five Group" class="rc-logo-wefive">
+                            </div>
+                            <div class="d-flex align-items-center gap-2 rc-sub-brand-badge">
+                                <img src="/static/calculator/img/logo_legacy.png" alt="Legacy Roofing" class="rc-logo-legacy">
+                                <div class="vr my-1" style="height: 16px; opacity: 0.35;"></div>
+                                <img src="/static/calculator/img/logo_halten.png" alt="Halten Roofing" class="rc-logo-halten">
+                            </div>
                         </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <img src="/static/calculator/img/logo_legacy.png" alt="Legacy Roofing" height="20" class="rc-logo-legacy">
-                            <div class="vr my-1" style="height: 18px; opacity: 0.25;"></div>
-                            <img src="/static/calculator/img/logo_halten.png" alt="Halten Roofing" height="20" class="rc-logo-halten">
-                        </div>
-                    </div>
 
-                    <!-- Header Banner -->
-                    <div class="rc-header">
-                        <div class="d-flex justify-content-between align-items-center">
+                        <!-- Gradient Accent Line -->
+                        <div class="rc-accent-line"></div>
+
+                        <!-- Product Title & Date Banner -->
+                        <div class="rc-title-banner d-flex justify-content-between align-items-center">
                             <div>
                                 <h4 class="rc-title mb-0" id="card-product-display">{{ preview.product }}</h4>
                             </div>
                             <div class="text-end">
-                                <span class="badge bg-warning text-dark fw-bold px-2 py-0.5" style="font-size: 0.72rem;">
+                                <span class="rc-date-chip">
                                     <i class="bi bi-calendar3 me-1"></i> <span id="card-date-display">{{ preview.date }}</span>
                                 </span>
                             </div>

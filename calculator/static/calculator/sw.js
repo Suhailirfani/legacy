@@ -1,6 +1,6 @@
 // Roofing Calculator Service Worker
-// Version 10: Official We Five Group, Legacy, and Halten logos
-const CACHE_NAME = 'roofing-calc-v10';
+// Version 11: Seamless blended header design and responsive styling
+const CACHE_NAME = 'roofing-calc-v11';
 const STATIC_ASSETS = [
   '/manifest.json',
   '/static/calculator/manifest.json',

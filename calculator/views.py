@@ -46,7 +46,7 @@ def dashboard_view(request):
             tier_list = target_calc.get_tier_list()
             preview_data = {
                 'id': target_calc.id,
-                'date': target_calc.date.strftime('%Y-%m-%d'),
+                'date': target_calc.date.strftime('%d-%m-%Y'),
                 'product': target_calc.product,
                 'thickness': float(target_calc.thickness),
                 'weight_10ft': target_calc.weight_10ft,
@@ -86,7 +86,7 @@ def dashboard_view(request):
         def_tier_list = default_results['tier_rates_list']
         preview_data = {
             'id': None,
-            'date': timezone.now().strftime('%Y-%m-%d'),
+            'date': timezone.now().strftime('%d-%m-%Y'),
             'product': 'JINDAL',
             'thickness': 0.35,
             'weight_10ft': 8.4,

@@ -1,6 +1,6 @@
 // Roofing Calculator Service Worker
-// Version 8: Refined Rate Card Design
-const CACHE_NAME = 'roofing-calc-v8';
+// Version 9: DD-MM-YYYY date format
+const CACHE_NAME = 'roofing-calc-v9';
 const STATIC_ASSETS = [
   '/manifest.json',
   '/static/calculator/manifest.json',

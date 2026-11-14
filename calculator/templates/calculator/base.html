@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>{% block title %}Roofing Margin & Rate Card Calculator{% endblock %}</title>
+
+    <!-- PWA Web App Manifest & Chrome Install Metadata -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1e3a8a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Roofing Calc">
+    <meta name="application-name" content="Roofing Calc">
+    
+    <!-- Icons for PWA / Chrome / iOS -->
+    <link rel="icon" type="image/png" sizes="64x64" href="/static/calculator/icons/icon-64.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/static/calculator/icons/icon-192.png">
+    <link rel="apple-touch-icon" href="/static/calculator/icons/icon-192.png">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Google Fonts: Outfit & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --brand-primary: #1e3a8a;
+            --brand-secondary: #0f172a;
+            --brand-accent: #0284c7;
+            --brand-gold: #f59e0b;
+            --bg-body: #f8fafc;
+            --card-border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4, h5, h6, .brand-font {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .navbar-brand-custom {
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .navbar-custom {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            box-shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.25);
+            padding-top: 0.25rem !important;
+            padding-bottom: 0.25rem !important;
+        }
+
+        .card-custom {
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            background: #ffffff;
+            box-shadow: 0 2px 5px -1px rgba(0, 0, 0, 0.04);
+            transition: all 0.2s ease;
+        }
+
+        .card-custom-header {
+            background-color: #ffffff;
+            border-bottom: 1px solid var(--card-border);
+            padding: 0.25rem 0.65rem;
+            border-top-left-radius: 10px !important;
+            border-top-right-radius: 10px !important;
+        }
+
+        /* Form elements - Ultra Compact */
+        .form-label {
+            font-weight: 700;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            color: #475569;
+            margin-bottom: 0.15rem;
+        }
+
+        .form-control, .form-select {
+            border-radius: 6px;
+            border: 1.5px solid #cbd5e1;
+            padding: 0.32rem 0.55rem;
+            font-size: 0.85rem;
+            height: auto;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #0284c7;
+            box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+        }
+
+        .input-group-text {
+            background-color: #f1f5f9;
+            border: 1.5px solid #cbd5e1;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 0.8rem;
+            padding: 0.32rem 0.55rem;
+        }
+
+        /* Compact chips */
+        .thickness-chip {
+            cursor: pointer;
+            padding: 0.15rem 0.35rem;
+            font-size: 0.68rem;
+            font-weight: 600;
+            border-radius: 4px;
+            user-select: none;
+            transition: all 0.1s ease;
+        }
+        .thickness-chip:hover {
+            background-color: #0284c7 !important;
+            color: #ffffff !important;
+            border-color: #0284c7 !important;
+        }
+
+        /* Buttons */
+        .btn-brand-primary {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            color: #ffffff;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            padding: 0.4rem 0.85rem;
+            font-size: 0.82rem;
+        }
+
+        .btn-brand-primary:hover {
+            background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+            color: #ffffff;
+        }
+
+        .btn-brand-save {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: #ffffff;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            padding: 0.4rem 0.85rem;
+            font-size: 0.82rem;
+        }
+
+        .btn-brand-save:hover {
+            background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+            color: #ffffff;
+        }
+
+        .btn-brand-download {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            color: #ffffff;
+            font-weight: 700;
+            border: none;
+            border-radius: 6px;
+            padding: 0.4rem 0.85rem;
+            font-size: 0.82rem;
+        }
+
+        .btn-brand-download:hover {
+            background: linear-gradient(135deg, #b45309 0%, #92400e 100%);
+            color: #ffffff;
+        }
+
+        /* MOBILE RATE CARD CONTAINER (Standard Phone Width on Desktop & Mobile) */
+        #rate-card-capture {
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #0f172a;
+            box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.15);
+            width: 100%;
+            max-width: 410px;
+            margin: 0 auto;
+            margin-top: 0 !important;
+            box-sizing: border-box;
+        }
+
+        .rc-header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 65%, #1e3a8a 100%);
+            color: #ffffff;
+            padding: 0.5rem 0.8rem;
+        }
+
+        .rc-brand-pill {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 0.1rem 0.45rem;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #38bdf8;
+        }
+
+        .rc-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0.15rem 0 0 0;
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+        }
+
+        .rc-meta-strip {
+            background: #f8fafc;
+            border-bottom: 2px solid #e2e8f0;
+            padding: 0.45rem 0.8rem;
+        }
+
+        .rc-meta-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 0.3rem 0.4rem;
+            text-align: center;
+        }
+
+        .rc-meta-label {
+            font-size: 0.62rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+
+        .rc-meta-value {
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.1;
+        }
+
+        .rc-meta-value.highlight {
+            color: #0284c7;
+        }
+
+        /* 4-COLUMN RATE TABLE (Clean Table Structure, NO repeated 'MARGIN' in cells) */
+        .tier-table-container {
+            padding: 0.4rem 0.6rem;
+            background: #ffffff;
+        }
+
+        .border-end-thick {
+            border-right: 2px solid #cbd5e1 !important;
+        }
+
+        .tier-card-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            margin: 0;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .tier-table-head th {
+            background: #0f172a;
+            color: #ffffff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-align: center;
+            padding: 0.4rem 0.2rem;
+            letter-spacing: 0.03em;
+            border-bottom: 2px solid #334155;
+        }
+
+        .tier-row {
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tier-row:last-child {
+            border-bottom: none;
+        }
+
+        .tier-row:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .tier-row:nth-child(odd) {
+            background-color: #ffffff;
+        }
+
+        .tier-row td {
+            padding: 0.38rem 0.25rem;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .badge-margin {
+            display: inline-block;
+            background: #fef3c7;
+            color: #92400e;
+            font-weight: 800;
+            font-size: 0.78rem;
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            border: 1px solid #fde68a;
+        }
+
+        .tier-col-rate {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #0f172a;
+            white-space: nowrap;
+        }
+
+        .rc-footer-strip {
+            background: #f1f5f9;
+            padding: 0.4rem 0.8rem;
+            border-top: 1.5px solid #e2e8f0;
+            font-size: 0.68rem;
+            color: #64748b;
+        }
+
+        /* RESPONSIVE MOBILE VIEWPORT & MODERN UI (< 768px) */
+        @media (max-width: 768px) {
+            body {
+                font-size: 0.85rem;
+            }
+
+            .navbar-custom {
+                padding-top: 0.5rem !important;
+                padding-bottom: 0.5rem !important;
+            }
+
+            main.container-fluid {
+                padding-left: 0.45rem !important;
+                padding-right: 0.45rem !important;
+                padding-top: 0.45rem !important;
+            }
+
+            .card-custom {
+                border-radius: 12px !important;
+                box-shadow: 0 3px 14px rgba(15, 23, 42, 0.06) !important;
+                border: 1px solid #e2e8f0 !important;
+                margin-bottom: 0.65rem;
+            }
+
+            .card-custom-header {
+                padding: 0.45rem 0.75rem !important;
+                background-color: #f8fafc !important;
+            }
+
+            .card-custom-header span {
+                font-size: 0.82rem !important;
+            }
+
+            .card-body {
+                padding: 0.7rem !important;
+            }
+
+            .form-label {
+                font-size: 0.72rem !important;
+                font-weight: 700 !important;
+                color: #334155 !important;
+                margin-bottom: 0.22rem !important;
+                letter-spacing: 0.02em !important;
+            }
+
+            .form-control, .form-select {
+                padding: 0.42rem 0.6rem !important;
+                font-size: 0.92rem !important;
+                min-height: 40px !important;
+                border-radius: 8px !important;
+                border: 1.5px solid #cbd5e1 !important;
+                background-color: #ffffff !important;
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+                transition: all 0.2s ease !important;
+            }
+
+            .form-control:focus, .form-select:focus {
+                border-color: #0284c7 !important;
+                box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15) !important;
+            }
+
+            .input-group-text {
+                padding: 0.35rem 0.6rem !important;
+                font-size: 0.82rem !important;
+                font-weight: 600 !important;
+                color: #475569 !important;
+                border: 1.5px solid #cbd5e1 !important;
+                background-color: #f1f5f9 !important;
+                border-radius: 8px !important;
+            }
+
+            .thickness-chip {
+                padding: 0.1rem 0.35rem !important;
+                font-size: 0.65rem !important;
+                font-weight: 600 !important;
+                border-radius: 10px !important;
+                border: 1px solid #cbd5e1 !important;
+                background: #f8fafc !important;
+                color: #334155 !important;
+                min-height: 20px !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                cursor: pointer;
+                line-height: 1 !important;
+                transition: all 0.15s ease;
+            }
+
+            .thickness-chip:active, .thickness-chip.active {
+                background: #0284c7 !important;
+                color: #ffffff !important;
+                border-color: #0284c7 !important;
+                box-shadow: 0 1px 4px rgba(2, 132, 199, 0.3) !important;
+                transform: scale(0.96);
+            }
+
+            .pricing-rules-pill {
+                background-color: #f8fafc !important;
+                border: 1px solid #e2e8f0 !important;
+                padding: 0.45rem 0.65rem !important;
+                border-radius: 8px !important;
+                font-size: 0.72rem !important;
+                color: #64748b;
+            }
+
+            .btn-brand-primary, .btn-brand-save {
+                padding: 0.5rem 0.85rem !important;
+                font-size: 0.85rem !important;
+                font-weight: 700 !important;
+                min-height: 42px !important;
+                border-radius: 8px !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+            }
+
+            .btn-brand-download {
+                padding: 0.45rem 0.8rem !important;
+                font-size: 0.82rem !important;
+                border-radius: 8px !important;
+            }
+
+            /* Live screen mobile rate card scaling */
+            #rate-card-capture {
+                max-width: 100% !important;
+                border-radius: 10px !important;
+            }
+
+            .rc-header {
+                padding: 0.55rem 0.75rem !important;
+            }
+
+            .rc-title {
+                font-size: 1.15rem !important;
+            }
+
+            .rc-brand-pill {
+                font-size: 0.58rem !important;
+                padding: 0.08rem 0.35rem !important;
+            }
+
+            .rc-meta-strip {
+                padding: 0.35rem 0.55rem !important;
+            }
+
+            .rc-meta-box {
+                padding: 0.22rem 0.3rem !important;
+            }
+
+            .rc-meta-label {
+                font-size: 0.58rem !important;
+            }
+
+            .rc-meta-value {
+                font-size: 0.82rem !important;
+            }
+
+            .tier-table-container {
+                padding: 0.3rem 0.45rem !important;
+            }
+
+            .tier-table-head th {
+                font-size: 0.64rem !important;
+                padding: 0.32rem 0.15rem !important;
+            }
+
+            .tier-row td {
+                padding: 0.32rem 0.15rem !important;
+            }
+
+            .badge-margin {
+                font-size: 0.72rem !important;
+                padding: 0.08rem 0.3rem !important;
+            }
+
+            .tier-col-rate {
+                font-size: 0.95rem !important;
+            }
+
+            .rc-footer-strip {
+                padding: 0.32rem 0.55rem !important;
+                font-size: 0.62rem !important;
+            }
+
+            .table-custom thead th {
+                font-size: 0.68rem !important;
+                padding: 0.4rem 0.45rem !important;
+            }
+
+            .table-custom tbody td {
+                font-size: 0.75rem !important;
+                padding: 0.4rem 0.45rem !important;
+            }
+        }
+
+        /* CANONICAL EXPORT CLASS: Guarantees 100% Identical Download on Mobile & Desktop */
+        .rate-card-canonical {
+            width: 390px !important;
+            min-width: 390px !important;
+            max-width: 390px !important;
+            margin: 0 !important;
+            box-shadow: none !important;
+            border-radius: 12px !important;
+        }
+        .rate-card-canonical .rc-header {
+            padding: 0.65rem 0.9rem !important;
+        }
+        .rate-card-canonical .rc-title {
+            font-size: 1.35rem !important;
+        }
+        .rate-card-canonical .rc-brand-pill {
+            font-size: 0.65rem !important;
+            padding: 0.1rem 0.45rem !important;
+        }
+        .rate-card-canonical .rc-meta-strip {
+            padding: 0.45rem 0.8rem !important;
+        }
+        .rate-card-canonical .rc-meta-box {
+            padding: 0.3rem 0.4rem !important;
+        }
+        .rate-card-canonical .rc-meta-label {
+            font-size: 0.62rem !important;
+        }
+        .rate-card-canonical .rc-meta-value {
+            font-size: 0.92rem !important;
+        }
+        .rate-card-canonical .tier-table-container {
+            padding: 0.4rem 0.6rem !important;
+        }
+        .rate-card-canonical .tier-table-head th {
+            font-size: 0.7rem !important;
+            padding: 0.4rem 0.2rem !important;
+        }
+        .rate-card-canonical .tier-row td {
+            padding: 0.38rem 0.25rem !important;
+        }
+        .rate-card-canonical .badge-margin {
+            font-size: 0.78rem !important;
+            padding: 0.1rem 0.4rem !important;
+        }
+        .rate-card-canonical .tier-col-rate {
+            font-size: 1.05rem !important;
+        }
+        .rate-card-canonical .rc-footer-strip {
+            font-size: 0.68rem !important;
+            padding: 0.4rem 0.8rem !important;
+        }
+
+        /* History Table with Full 10 Margin Tiers */
+        .table-custom thead th {
+            background-color: #0f172a;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.74rem;
+            text-transform: uppercase;
+            padding: 0.5rem 0.55rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .table-custom thead th.th-tier-header {
+            background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%);
+            color: #ffffff;
+            font-size: 0.72rem;
+            letter-spacing: 0.02em;
+            text-align: center;
+        }
+
+        .table-custom thead th.th-tier-sub {
+            background-color: #1e293b;
+            color: #38bdf8;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.35rem 0.4rem;
+            text-align: center;
+        }
+
+        .table-custom tbody td {
+            padding: 0.45rem 0.55rem;
+            vertical-align: middle;
+            font-size: 0.82rem;
+            border-bottom: 1px solid #e2e8f0;
+            white-space: nowrap;
+        }
+
+        .table-custom tbody td.td-tier {
+            font-weight: 600;
+            color: #0f172a;
+            background-color: #fcfdfe;
+            border-left: 1px solid #f1f5f9;
+            font-size: 0.8rem;
+        }
+
+        .table-custom tbody tr:hover td.td-tier {
+            background-color: #f0f9ff;
+        }
+
+        /* Spinner Overlay */
+        .spinner-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.5);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation Bar with Install App Button -->
+    <nav class="navbar navbar-dark navbar-custom py-2 px-1">
+        <div class="container-fluid px-2 px-md-3 d-flex align-items-center justify-content-between">
+            <a class="navbar-brand navbar-brand-custom text-white py-0 me-3 d-flex align-items-center gap-2" href="{% url 'dashboard' %}">
+                <img src="/static/calculator/icons/icon-64.png" alt="Logo" width="24" height="24" class="rounded shadow-sm">
+                <span class="fs-6 fw-bold">Roofing Margin & Rate Card</span>
+                <span class="badge bg-light text-dark ms-2 fw-semibold d-none d-sm-inline-block" style="font-size: 0.62rem;">PRO CALC</span>
+            </a>
+            <div class="d-flex align-items-center gap-2 gap-sm-3 ms-auto">
+                <!-- Saved Records Archive Link in Navbar -->
+                <a href="{% url 'history_view' %}" class="btn btn-outline-light btn-sm py-1 px-2.5 fw-semibold d-inline-flex align-items-center gap-1.5" style="font-size: 0.76rem;" title="View all saved calculations in archive">
+                    <i class="bi bi-folder2-open"></i>
+                    <span>Saved Records</span>
+                </a>
+                <!-- Chrome Install App Button -->
+                <button type="button" class="btn btn-warning btn-sm py-1 px-2.5 fw-bold text-dark shadow-sm d-none d-inline-flex align-items-center gap-1.5" id="btn-pwa-install" style="font-size: 0.76rem;">
+                    <i class="bi bi-arrow-down-circle-fill"></i>
+                    <span>Install</span>
+                </button>
+                
+                <span class="text-white-50 small d-none d-sm-inline ms-1" style="font-size: 0.75rem;">
+                    <i class="bi bi-clock me-1"></i> <span id="nav-clock"></span>
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container with tight padding for single-screen view -->
+    <main class="container-fluid px-2 px-md-3 py-1 py-md-2">
+        <!-- Toast / Alerts -->
+        {% if messages %}
+            <div class="mb-1">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show py-1 px-2.5 mb-1" role="alert" style="font-size: 0.8rem;">
+                        {{ message }}
+                        <button type="button" class="btn-close py-1" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Fullscreen Spinner Overlay for Download -->
+    <div id="spinner-overlay" class="spinner-overlay">
+        <div class="bg-white p-3 rounded-3 text-center shadow-lg">
+            <div class="spinner-border spinner-border-sm text-primary mb-1" role="status"></div>
+            <div class="fw-bold text-dark small">Rendering Crisp Rate Card...</div>
+            <div class="text-muted" style="font-size: 0.7rem;">Generating mobile-ready high-res PNG</div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- html2canvas CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    
+    <script>
+        function updateClock() {
+            const clockEl = document.getElementById('nav-clock');
+            if (clockEl) {
+                const now = new Date();
+                clockEl.textContent = now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+            }
+        }
+        updateClock();
+
+        // Register Service Worker for Chrome PWA Installation
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((reg) => {
+                        console.log('Roofing Calc Service Worker registered with scope:', reg.scope);
+                        // Check for sw updates on every page load
+                        reg.update();
+                    })
+                    .catch((err) => {
+                        console.warn('Service Worker registration failed:', err);
+                    });
+            });
+        }
+
+        // Handle Chrome "Install App" Prompt
+        let deferredInstallPrompt = null;
+        const installBtn = document.getElementById('btn-pwa-install');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredInstallPrompt = e;
+            if (installBtn) {
+                installBtn.classList.remove('d-none');
+            }
+        });
+
+        if (installBtn) {
+            installBtn.addEventListener('click', async () => {
+                if (deferredInstallPrompt) {
+                    deferredInstallPrompt.prompt();
+                    const choiceResult = await deferredInstallPrompt.userChoice;
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User installed Roofing Calc App');
+                    }
+                    deferredInstallPrompt = null;
+                    installBtn.classList.add('d-none');
+                } else {
+                    alert('To install in Chrome:\nClick the "Install" icon (monitor/arrow) in Chrome address bar or open Chrome menu (⋮) -> "Install Roofing Calc".');
+                }
+            });
+        }
+
+        window.addEventListener('appinstalled', () => {
+            console.log('Roofing Calc App installed successfully.');
+            if (installBtn) {
+                installBtn.classList.add('d-none');
+            }
+        });
+    </script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,536 @@
+{% extends 'calculator/base.html' %}
+
+{% block title %}Roofing Margin & Rate Card Calculator{% endblock %}
+
+{% block content %}
+<!-- Main Row: Left Form & Right Rate Card Preview (Clean, zero vertical scroll, single-screen experience) -->
+<div class="row g-2 align-items-stretch">
+    <!-- LEFT PANEL: Ultra-Compact Calculation Inputs Form -->
+    <div class="col-xl-6 col-lg-6">
+        <div class="card card-custom h-100">
+            <div class="card-custom-header d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-1.5">
+                    <span class="p-1 rounded bg-primary-subtle text-primary">
+                        <i class="bi bi-sliders2-vertical" style="font-size: 0.85rem;"></i>
+                    </span>
+                    <span class="fw-bold text-dark" style="font-size: 0.85rem;">Parameters & Costing</span>
+                </div>
+                <div class="d-flex align-items-center gap-1.5">
+                    
+                    <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2" id="btn-reset" title="Reset parameters" style="font-size: 0.72rem;">
+                        <i class="bi bi-arrow-counterclockwise"></i> Reset
+                    </button>
+                </div>
+            </div>
+
+            <div class="card-body p-2 pt-1.5 pb-1 d-flex flex-column justify-content-start gap-1.5">
+                <form id="calc-form" method="POST" action="{% url 'dashboard' %}" class="d-flex flex-column gap-2">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" id="form-action" value="calculate">
+
+                    <!-- Row 1: Date (col-4) & Product (col-8) -->
+                    <div class="row g-2 g-md-1.5">
+                        <div class="col-4">
+                            <label for="input-date" class="form-label d-flex align-items-center gap-1">
+                                <i class="bi bi-calendar-event text-primary"></i> Date
+                            </label>
+                            {{ form.date }}
+                        </div>
+                        <div class="col-8">
+                            <label for="input-product" class="form-label d-flex align-items-center gap-1">
+                                <i class="bi bi-tag text-primary"></i> Product / Brand
+                            </label>
+                            {{ form.product }}
+                            <datalist id="product-presets">
+                                <option value="JINDAL">
+                                <option value="Sakthi">
+                                <option value="Duramet">
+                                <option value="Tata Bluescope">
+                                <option value="JSW Pragati">
+                                <option value="AM/NS India">
+                                <option value="ColourRoof Pro">
+                            </datalist>
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Thickness (col-4) & Chips (col-8) -->
+                    <div class="row g-2 g-md-1.5 align-items-center">
+                        <div class="col-4">
+                            <label for="input-thickness" class="form-label d-flex align-items-center gap-1">
+                                <i class="bi bi-layers text-primary"></i> Thickness
+                            </label>
+                            {{ form.thickness }}
+                        </div>
+                        <div class="col-8">
+                            <label class="form-label d-block text-muted" style="font-size: 0.62rem; margin-bottom: 0.15rem;">Quick Presets (mm)</label>
+                            <div class="d-flex flex-wrap gap-1">
+                                <span class="thickness-chip" data-val="0.30">.30</span>
+                                <span class="thickness-chip" data-val="0.35">.35</span>
+                                <span class="thickness-chip" data-val="0.40">.40</span>
+                                <span class="thickness-chip" data-val="0.45">.45</span>
+                                <span class="thickness-chip" data-val="0.50">.50</span>
+                                <span class="thickness-chip" data-val="2.30">2.3</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 3: 10ft Sheet Weight (col-6) & Basic Purchase Rate (col-6) -->
+                    <div class="row g-2 g-md-1.5">
+                        <div class="col-6">
+                            <label for="input-weight" class="form-label d-flex align-items-center gap-1">
+                                <i class="bi bi-speedometer2 text-primary"></i> 10-ft Weight
+                            </label>
+                            <div class="input-group input-group-sm">
+                                {{ form.weight_10ft }}
+                                <span class="input-group-text py-0 px-2 text-muted" style="font-size: 0.74rem;">kg</span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <label for="input-landing-rate" class="form-label d-flex align-items-center gap-1">
+                                <i class="bi bi-currency-rupee text-primary"></i> Basic Rate (Excl GST)
+                            </label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text py-0 px-2 fw-bold text-dark">₹</span>
+                                {{ form.landing_rate }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 4: Single-Line Pricing Rule Strip -->
+                    <div class="pricing-rules-pill d-flex justify-content-between align-items-center px-2.5 py-1.5 rounded border text-muted" style="font-size: 0.7rem;">
+                        <div><i class="bi bi-shield-check text-success me-1"></i>+18% GST Auto Added</div>
+                        <div><i class="bi bi-box-seam text-primary me-1"></i>1 Ton = 1000 kg</div>
+                        <div><i class="bi bi-aspect-ratio text-info me-1"></i>10ft = 36 Sq.Ft</div>
+                    </div>
+
+                    <!-- Row 5: Action Buttons -->
+                    <div class="d-flex gap-2 pt-1">
+                        <button type="submit" id="btn-calculate" class="btn btn-brand-primary flex-grow-1 shadow-sm">
+                            <i class="bi bi-cpu me-1"></i> Calculate Card
+                        </button>
+                        <button type="button" id="btn-save-history" class="btn btn-brand-save flex-grow-1 shadow-sm">
+                            <i class="bi bi-bookmark-check-fill me-1"></i> Save to Records
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT PANEL: Executive Mobile Rate Card Preview (Identical on Mobile, Computer & PNG Export) -->
+    <div class="col-xl-6 col-lg-6">
+        <div class="card card-custom h-100">
+            <div class="card-custom-header d-flex justify-content-end align-items-center gap-2">
+                <div class="d-flex align-items-center gap-1.5 me-auto d-none d-sm-flex">
+                    <span class="p-1 rounded bg-success-subtle text-success">
+                        <i class="bi bi-phone" style="font-size: 0.82rem;"></i>
+                    </span>
+                    <span class="fw-bold text-dark" style="font-size: 0.82rem;">Rate Card Preview</span>
+                </div>
+                <!-- Action controls shifted cleanly to the right side -->
+                <div class="d-flex align-items-center gap-1.5 ms-auto">
+                    <button type="button" id="btn-download-png" class="btn btn-brand-download py-0.5 px-2.5 shadow-sm" style="font-size: 0.76rem;">
+                        <i class="bi bi-download me-1"></i> Download Rate Card (PNG)
+                    </button>
+                    <button type="button" id="btn-copy-card" class="btn btn-outline-secondary btn-sm py-0.5 px-2 d-none d-md-inline-block" title="Copy Card text to clipboard" style="font-size: 0.76rem;">
+                        <i class="bi bi-clipboard"></i>
+                    </button>
+                    <a href="{% url 'history_view' %}" class="btn btn-outline-secondary btn-sm py-0.5 px-2 d-none d-sm-inline-block" title="Open Saved Calculations Page" style="font-size: 0.74rem;">
+                        <i class="bi bi-clock-history"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="card-body p-1 pt-1 pb-1 d-flex flex-column justify-content-start align-items-center bg-light">
+                <!-- THE RATE CARD CONTAINER TO CAPTURE (#rate-card-capture) -->
+                <!-- Mobile card form factor: 100% identical in viewing and downloading -->
+                <div id="rate-card-capture">
+                    
+                    <!-- Header Banner -->
+                    <div class="rc-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="d-flex align-items-center gap-1.5">
+                                    <span class="rc-brand-pill">ROOFING RATE CARD</span>
+                                </div>
+                                <h4 class="rc-title" id="card-product-display">{{ preview.product }}</h4>
+                                <div class="text-white-50" style="font-size: 0.68rem;">
+                                    Color Coated Profile Sheets
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-warning text-dark fw-bold px-2 py-0.5" style="font-size: 0.7rem;">
+                                    <i class="bi bi-calendar3 me-1"></i> <span id="card-date-display">{{ preview.date }}</span>
+                                </span>
+                                <div class="text-white-50" style="font-size: 0.65rem; margin-top: 2px;">
+                                    REF: <span id="card-ref-code" class="text-info fw-bold">RC-{{ preview.product|upper|slice:":3" }}-{{ preview.thickness }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Technical Specifications Strip (2x2 Clean Badges) -->
+                    <div class="rc-meta-strip">
+                        <div class="row g-1 text-center">
+                            <div class="col-6">
+                                <div class="rc-meta-box">
+                                    <span class="rc-meta-label d-block">Thickness & Weight</span>
+                                    <span class="rc-meta-value"><span id="card-thickness-display">{{ preview.thickness }}</span> mm • <span id="card-weight-display">{{ preview.weight_10ft }}</span> kg</span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="rc-meta-box">
+                                    <span class="rc-meta-label d-block">Landing Rate (18% GST)</span>
+                                    <span class="rc-meta-value highlight">₹<span id="card-landing-display">{{ preview.rate_incl_gst }}</span>/kg</span>
+                                </div>
+                            </div>
+                            <div class="col-12 mt-1">
+                                <div class="rc-meta-box py-1 bg-light border d-flex justify-content-around align-items-center">
+                                    <div>
+                                        <span class="text-muted small" style="font-size: 0.65rem;">Base Cost: </span>
+                                        <strong class="text-success" style="font-size: 0.85rem;">₹<span id="card-basecost-display">{{ preview.cost_per_sqft }}</span> / Sq.Ft</strong>
+                                    </div>
+                                    <div class="border-start ps-2">
+                                        <span class="text-muted small" style="font-size: 0.65rem;">Sheets/Ton: </span>
+                                        <strong class="text-dark" style="font-size: 0.85rem;"><span id="card-sheets-display">{{ preview.sheets_per_ton }}</span> pcs</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ALL 10 MARGIN TIERS IN A CLEAN 4-COLUMN TABLE (NO REPEATED 'MARGIN' TEXT) -->
+                    <div class="tier-table-container">
+                        <table class="tier-card-table">
+                            <thead>
+                                <tr class="tier-table-head">
+                                    <th style="width: 23%;">MARGIN</th>
+                                    <th style="width: 27%;" class="border-end-thick">RATE (/SQFT)</th>
+                                    <th style="width: 23%;">MARGIN</th>
+                                    <th style="width: 27%;">RATE (/SQFT)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for pair in preview.tier_pairs %}
+                                <tr class="tier-row">
+                                    <!-- Left Tier -->
+                                    <td><span class="badge-margin">+₹{{ pair.left.margin }}</span></td>
+                                    <td class="tier-col-rate border-end-thick">₹<span class="tier-val" data-margin="{{ pair.left.margin }}">{{ pair.left.rate }}</span></td>
+                                    <!-- Right Tier -->
+                                    <td><span class="badge-margin">+₹{{ pair.right.margin }}</span></td>
+                                    <td class="tier-col-rate">₹<span class="tier-val" data-margin="{{ pair.right.margin }}">{{ pair.right.rate }}</span></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Compact Footer Strip -->
+                    <div class="rc-footer-strip">
+                        <div class="d-flex justify-content-between align-items-center mb-0.5">
+                            <div>
+                                <i class="bi bi-box-seam text-secondary me-1"></i>Ton Cost: <strong>₹<span id="card-tonrate-display">{{ preview.ton_rate }}</span></strong>
+                            </div>
+                            <div>
+                                Coverage: <strong><span id="card-sqft-display">{{ preview.sqft_per_ton }}</span> Sq.Ft</strong>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center border-top pt-1 text-muted" style="font-size: 0.62rem;">
+                            <span>Commercial Quotation • Valid as per coil rates</span>
+                            <span class="fw-bold text-dark">Pro Roofing Calc</span>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /#rate-card-capture -->
+                
+                <div class="text-center text-muted mt-1.5" style="font-size: 0.72rem;">
+                    <i class="bi bi-phone me-1"></i> Standard mobile card format • Identical on screen and downloaded PNG
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Fixed business constants
+    const GST_RATE = 0.18;
+    const NET_WEIGHT_KG = 1000.0;
+    const SHEET_AREA_SQFT = 36.0;
+    const MARGIN_TIERS = [15, 13, 11, 10, 8, 7, 6, 5, 4, 3];
+
+    // Form elements
+    const calcForm = document.getElementById('calc-form');
+    const inputDate = document.getElementById('input-date');
+    const inputProduct = document.getElementById('input-product');
+    const inputThickness = document.getElementById('input-thickness');
+    const inputWeight = document.getElementById('input-weight');
+    const inputLandingRate = document.getElementById('input-landing-rate');
+    const formAction = document.getElementById('form-action');
+
+    // Action buttons
+    const btnCalculate = document.getElementById('btn-calculate');
+    const btnSaveHistory = document.getElementById('btn-save-history');
+    const btnReset = document.getElementById('btn-reset');
+    const btnDownloadPng = document.getElementById('btn-download-png');
+    const btnCopyCard = document.getElementById('btn-copy-card');
+
+    // Rate Card Preview Displays
+    const cardProductDisplay = document.getElementById('card-product-display');
+    const cardDateDisplay = document.getElementById('card-date-display');
+    const cardThicknessDisplay = document.getElementById('card-thickness-display');
+    const cardWeightDisplay = document.getElementById('card-weight-display');
+    const cardLandingDisplay = document.getElementById('card-landing-display');
+    const cardBaseCostDisplay = document.getElementById('card-basecost-display');
+    const cardSheetsDisplay = document.getElementById('card-sheets-display');
+    const cardSqftDisplay = document.getElementById('card-sqft-display');
+    const cardTonRateDisplay = document.getElementById('card-tonrate-display');
+    const cardRefCode = document.getElementById('card-ref-code');
+    const spinnerOverlay = document.getElementById('spinner-overlay');
+
+    // Thickness chip buttons with active state highlight
+    function syncActiveChip(val) {
+        document.querySelectorAll('.thickness-chip').forEach(btn => {
+            if (parseFloat(btn.dataset.val) === parseFloat(val)) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    }
+
+    document.querySelectorAll('.thickness-chip').forEach(btn => {
+        btn.addEventListener('click', () => {
+            inputThickness.value = btn.dataset.val;
+            syncActiveChip(btn.dataset.val);
+            performRealtimeCalculation();
+        });
+    });
+
+    inputThickness.addEventListener('input', () => {
+        syncActiveChip(inputThickness.value);
+    });
+
+    // Pure Client-side Math Engine matching Python step-by-step
+    function performRealtimeCalculation() {
+        const product = inputProduct.value.trim() || 'PRO ROOF';
+        const dateVal = inputDate.value || new Date().toISOString().split('T')[0];
+        const thickness = parseFloat(inputThickness.value) || 0;
+        const weight10ft = parseFloat(inputWeight.value) || 0;
+        const basicRate = parseFloat(inputLandingRate.value) || 0;
+
+        // Update card header labels
+        cardProductDisplay.textContent = product;
+        cardDateDisplay.textContent = dateVal;
+        cardThicknessDisplay.textContent = thickness.toFixed(2);
+        cardWeightDisplay.textContent = weight10ft.toFixed(2);
+        const refProd = product.replace(/[^a-zA-Z0-9]/g, '').substring(0, 3).toUpperCase() || 'RC';
+        cardRefCode.textContent = `RC-${refProd}-${thickness.toFixed(2)}`;
+
+        if (weight10ft <= 0 || basicRate <= 0) {
+            return;
+        }
+
+        // 1. Basic rate excludes GST -> Always add 18% GST: rate_incl_gst = basicRate * 1.18
+        const rateInclGst = basicRate * (1 + GST_RATE);
+
+        // 2. ton_rate = rate_incl_gst * 1000
+        const tonRate = rateInclGst * NET_WEIGHT_KG;
+
+        // 3. sheets_per_ton = 1000 / weight_10ft
+        const sheetsPerTon = NET_WEIGHT_KG / weight10ft;
+
+        // 4. sqft_per_ton = sheets_per_ton * 36.0
+        const sqftPerTon = sheetsPerTon * SHEET_AREA_SQFT;
+
+        // 5. cost_per_sqft = ton_rate / sqft_per_ton
+        const costPerSqft = sqftPerTon > 0 ? (tonRate / sqftPerTon) : 0;
+
+        // Update displays
+        cardLandingDisplay.textContent = rateInclGst.toFixed(2);
+        cardBaseCostDisplay.textContent = costPerSqft.toFixed(2);
+        cardSheetsDisplay.textContent = sheetsPerTon.toFixed(1);
+        cardSqftDisplay.textContent = sqftPerTon.toFixed(1);
+        cardTonRateDisplay.textContent = tonRate.toLocaleString('en-IN', { maximumFractionDigits: 0 });
+
+        // 6. Target Selling Rate Tiers: (ton_rate + (M * 1000)) / sqft_per_ton
+        MARGIN_TIERS.forEach(margin => {
+            const sellingPriceSqft = (tonRate + (margin * NET_WEIGHT_KG)) / sqftPerTon;
+            const cell = document.querySelector(`.tier-val[data-margin="${margin}"]`);
+            if (cell) {
+                cell.textContent = sellingPriceSqft.toFixed(2);
+            }
+        });
+    }
+
+    // Attach real-time input listeners
+    [inputProduct, inputDate, inputThickness, inputWeight, inputLandingRate].forEach(el => {
+        el.addEventListener('input', performRealtimeCalculation);
+        el.addEventListener('change', performRealtimeCalculation);
+    });
+
+    // Reset button
+    btnReset.addEventListener('click', () => {
+        inputProduct.value = 'JINDAL';
+        inputThickness.value = '0.35';
+        inputWeight.value = '8.4';
+        inputLandingRate.value = '75.00';
+        inputDate.value = new Date().toISOString().split('T')[0];
+        performRealtimeCalculation();
+    });
+
+    // Save to History button (AJAX save with instant feedback)
+    btnSaveHistory.addEventListener('click', async function () {
+        const product = inputProduct.value.trim();
+        const thickness = parseFloat(inputThickness.value);
+        const weight = parseFloat(inputWeight.value);
+        const landingRate = parseFloat(inputLandingRate.value);
+        const dateVal = inputDate.value;
+
+        if (!product) {
+            alert('Please enter a product name.');
+            inputProduct.focus();
+            return;
+        }
+        if (isNaN(thickness) || thickness <= 0) {
+            alert('Please enter a valid thickness.');
+            inputThickness.focus();
+            return;
+        }
+        if (isNaN(weight) || weight <= 0) {
+            alert('Please enter a valid 10ft sheet weight (kg).');
+            inputWeight.focus();
+            return;
+        }
+        if (isNaN(landingRate) || landingRate <= 0) {
+            alert('Please enter a valid basic purchase rate (₹/kg).');
+            inputLandingRate.focus();
+            return;
+        }
+
+        btnSaveHistory.disabled = true;
+        btnSaveHistory.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Saving...';
+
+        try {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            const payload = {
+                product: product,
+                thickness: thickness,
+                weight_10ft: weight,
+                landing_rate: landingRate,
+                date: dateVal
+            };
+
+            const response = await fetch('/api/save/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const resData = await response.json();
+            if (response.ok && resData.status === 'success') {
+                // Update badge
+                const badge = document.getElementById('saved-count-badge');
+                if (badge) {
+                    badge.textContent = parseInt(badge.textContent || '0') + 1;
+                }
+                alert('Saved successfully! You can view and manage all saved calculations in "Saved Records".');
+            } else {
+                alert('Error saving calculation: ' + JSON.stringify(resData.errors || resData.error));
+            }
+        } catch (err) {
+            console.error(err);
+            formAction.value = 'save';
+            calcForm.submit();
+        } finally {
+            btnSaveHistory.disabled = false;
+            btnSaveHistory.innerHTML = '<i class="bi bi-bookmark-check-fill me-1"></i> Save to Records';
+        }
+    });
+
+    // Download Rate Card as Image (PNG) - EXACTLY IDENTICAL TO MOBILE CARD VIEW
+    btnDownloadPng.addEventListener('click', async function () {
+        const cardElement = document.getElementById('rate-card-capture');
+        if (!cardElement) return;
+
+        spinnerOverlay.style.display = 'flex';
+
+        if (document.fonts && document.fonts.ready) {
+            await document.fonts.ready;
+        }
+
+        const rawProduct = (inputProduct.value.trim() || 'Roofing').replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_-]/g, '');
+        const rawThickness = (inputThickness.value || '0.35').replace('.', '_');
+        const rawDate = inputDate.value || new Date().toISOString().split('T')[0];
+        const filename = `${rawProduct}_${rawThickness}_${rawDate}.png`;
+
+        html2canvas(cardElement, {
+            scale: 2.5, // Crisp 2.5x retina quality for WhatsApp share
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff',
+            scrollX: 0,
+            scrollY: 0,
+            logging: false,
+            onclone: function(clonedDoc) {
+                const clonedCard = clonedDoc.getElementById('rate-card-capture');
+                if (clonedCard) {
+                    clonedCard.classList.add('rate-card-canonical');
+                    clonedCard.style.boxShadow = 'none';
+                }
+            }
+        }).then(canvas => {
+            const imageUri = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = imageUri;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            spinnerOverlay.style.display = 'none';
+        }).catch(err => {
+            console.error('Error generating rate card image:', err);
+            spinnerOverlay.style.display = 'none';
+            alert('Failed to generate image. Please try again.');
+        });
+    });
+
+    // Copy summary to clipboard
+    if (btnCopyCard) {
+        btnCopyCard.addEventListener('click', () => {
+            const product = inputProduct.value.trim() || 'Roofing';
+            const thickness = inputThickness.value;
+            const landing = cardLandingDisplay.textContent;
+            const costSqft = cardBaseCostDisplay.textContent;
+            const dateVal = cardDateDisplay.textContent;
+            
+            let text = `*ROOFING RATE CARD - ${product} (${thickness}mm)*\nDate: ${dateVal}\nLanding Cost: ₹${landing}/kg (Incl. 18% GST)\nBase Cost: ₹${costSqft}/Sq.Ft\n\n*Target Selling Rates:*\n`;
+            MARGIN_TIERS.forEach(m => {
+                const cell = document.querySelector(`.tier-val[data-margin="${m}"]`);
+                if (cell) {
+                    text += `• Margin +₹${m}/kg -> *₹${cell.textContent}/Sq.Ft*\n`;
+                }
+            });
+
+            navigator.clipboard.writeText(text).then(() => {
+                const orig = btnCopyCard.innerHTML;
+                btnCopyCard.innerHTML = '<i class="bi bi-check2 text-success"></i> Copied!';
+                setTimeout(() => { btnCopyCard.innerHTML = orig; }, 1800);
+            }).catch(() => {
+                alert('Could not copy to clipboard.');
+            });
+        });
+    }
+
+    // Initial run
+    syncActiveChip(inputThickness.value);
+    performRealtimeCalculation();
+});
+</script>
+{% endblock %}

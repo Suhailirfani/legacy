@@ -1,0 +1,158 @@
+{% extends 'calculator/base.html' %}
+
+{% block title %}Saved Calculations Archive - Roofing Margin Calculator{% endblock %}
+
+{% block content %}
+<div class="row g-2 mb-3">
+    <div class="col-12">
+        <div class="card card-custom">
+            <!-- Header with Back Button, Title, and Search -->
+            <div class="card-custom-header d-flex flex-wrap justify-content-between align-items-center gap-2 py-2 px-3">
+                <div class="d-flex align-items-center gap-2">
+                    <a href="{% url 'dashboard' %}" class="btn btn-brand-primary btn-sm py-1 px-2.5" style="font-size: 0.8rem;">
+                        <i class="bi bi-arrow-left me-1"></i> Calculator
+                    </a>
+                    <div>
+                        <h6 class="mb-0 fw-bold d-flex align-items-center gap-1.5">
+                            <i class="bi bi-folder2-open text-primary"></i>
+                            Saved Calculations Archive
+                            <span class="badge bg-primary-subtle text-primary border" style="font-size: 0.68rem;">{{ filtered_count }} Records</span>
+                        </h6>
+                    </div>
+                </div>
+
+                <!-- Search by Product Name -->
+                <form method="GET" action="{% url 'history_view' %}" class="d-flex align-items-center gap-1.5 flex-grow-1 flex-sm-grow-0">
+                    <div class="input-group input-group-sm flex-grow-1" style="max-width: 260px;">
+                        <span class="input-group-text py-0 bg-white"><i class="bi bi-search"></i></span>
+                        <input type="text" name="search" class="form-control" placeholder="Search by Product / Brand..." value="{{ search_query }}">
+                        {% if search_query %}
+                            <a href="{% url 'history_view' %}" class="btn btn-outline-secondary py-0" title="Clear filter">
+                                <i class="bi bi-x"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-secondary btn-sm py-0.5 px-2" style="font-size: 0.78rem;">Filter</button>
+                </form>
+            </div>
+
+            <!-- Table of Saved Records -->
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-custom table-hover align-middle mb-0" id="saved-history-table">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" class="align-middle">Date</th>
+                                <th rowspan="2" class="align-middle">Product / Brand</th>
+                                <th rowspan="2" class="align-middle text-center">Thickness</th>
+                                <th rowspan="2" class="align-middle text-center">10-ft Wt</th>
+                                <th rowspan="2" class="align-middle text-end">Basic (₹/kg)</th>
+                                <th rowspan="2" class="align-middle text-end">Landing (+18%)</th>
+                                <th rowspan="2" class="align-middle text-end">Base Cost</th>
+                                <th colspan="10" class="text-center th-tier-header py-1">
+                                    <i class="bi bi-grid-3x3-gap-fill me-1"></i> Selling Rate per Sq.Ft by Margin Tier (+₹/kg)
+                                </th>
+                                <th rowspan="2" class="align-middle text-end">Actions</th>
+                            </tr>
+                            <tr class="text-center">
+                                <th class="th-tier-sub">+₹15</th>
+                                <th class="th-tier-sub">+₹13</th>
+                                <th class="th-tier-sub">+₹11</th>
+                                <th class="th-tier-sub">+₹10</th>
+                                <th class="th-tier-sub">+₹8</th>
+                                <th class="th-tier-sub">+₹7</th>
+                                <th class="th-tier-sub">+₹6</th>
+                                <th class="th-tier-sub">+₹5</th>
+                                <th class="th-tier-sub">+₹4</th>
+                                <th class="th-tier-sub">+₹3</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in history %}
+                                <tr>
+                                    <td class="fw-semibold text-secondary text-nowrap">
+                                        <i class="bi bi-calendar3 me-1 text-muted"></i>{{ item.date|date:"d-M-Y" }}
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold text-dark fs-6">{{ item.product }}</span>
+                                    </td>
+                                    <td class="text-center text-nowrap">
+                                        <span class="badge bg-secondary-subtle text-secondary-emphasis border">
+                                            {{ item.thickness }} mm
+                                        </span>
+                                    </td>
+                                    <td class="text-center text-nowrap">
+                                        {{ item.weight_10ft }} kg
+                                    </td>
+                                    <td class="text-end text-nowrap">
+                                        ₹{{ item.landing_rate|floatformat:2 }}
+                                    </td>
+                                    <td class="text-end text-nowrap">
+                                        <span class="fw-semibold text-primary">₹{{ item.rate_incl_gst|floatformat:2 }}</span>
+                                    </td>
+                                    <td class="text-end text-nowrap">
+                                        <span class="fw-bold text-success">₹{{ item.cost_per_sqft|floatformat:2 }}</span>
+                                    </td>
+                                    <!-- ALL 10 MARGIN OPTIONS -->
+                                    <td class="text-center td-tier">₹{{ item.tier_15|floatformat:2 }}</td>
+                                    <td class="text-center td-tier">₹{{ item.tier_13|floatformat:2 }}</td>
+                                    <td class="text-center td-tier">₹{{ item.tier_11|floatformat:2 }}</td>
+                                    <td class="text-center td-tier">₹{{ item.tier_10|floatformat:2 }}</td>
+                                    <td class="text-center td-tier">₹{{ item.tier_8|floatformat:2 }}</td>
+                                    <td class="text-center td-tier">₹{{ item.tier_7|floatformat:2 }}</td>
+                                    <td class="text-center td-tier">₹{{ item.tier_6|floatformat:2 }}</td>
+                                    <td class="text-center td-tier">₹{{ item.tier_5|floatformat:2 }}</td>
+                                    <td class="text-center td-tier">₹{{ item.tier_4|floatformat:2 }}</td>
+                                    <td class="text-center td-tier">₹{{ item.tier_3|floatformat:2 }}</td>
+                                    <td class="text-end text-nowrap">
+                                        <a href="{% url 'dashboard' %}?load={{ item.id }}" 
+                                           class="btn btn-primary btn-sm py-0.5 px-2 me-1" 
+                                           title="Load this record into the Rate Card Calculator and view/download PNG"
+                                           style="font-size: 0.75rem;">
+                                            <i class="bi bi-box-arrow-in-up-right me-1"></i> Load Card
+                                        </a>
+                                        <form method="POST" action="{% url 'delete_calculation' item.id %}" class="d-inline" onsubmit="return confirm('Permanently delete calculation record for {{ item.product }} ({{ item.thickness }}mm)?');">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="next" value="{% url 'history_view' %}">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm py-0.5 px-2" title="Delete record" style="font-size: 0.75rem;">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="18" class="text-center py-5 text-muted">
+                                        <i class="bi bi-inbox fs-1 d-block mb-2 text-secondary"></i>
+                                        {% if search_query %}
+                                            No calculations found matching "<strong>{{ search_query }}</strong>".
+                                            <div class="mt-2">
+                                                <a href="{% url 'history_view' %}" class="btn btn-sm btn-outline-primary">Show All Saved Records</a>
+                                            </div>
+                                        {% else %}
+                                            No calculation records saved yet.
+                                            <div class="mt-2">
+                                                <a href="{% url 'dashboard' %}" class="btn btn-sm btn-brand-primary">Go to Calculator & Save Calculations</a>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card-footer bg-white py-2 px-3 d-flex justify-content-between align-items-center">
+                <span class="small text-muted" style="font-size: 0.75rem;">
+                    Showing <strong>{{ filtered_count }}</strong> of <strong>{{ total_saved }}</strong> total saved calculations in SQLite database
+                </span>
+                <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary btn-sm py-0 px-2" style="font-size: 0.75rem;">
+                    <i class="bi bi-calculator me-1"></i> Back to Calculator
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

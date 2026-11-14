@@ -148,40 +148,48 @@
                     <div class="rc-header">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <div class="d-flex align-items-center gap-1.5">
-                                    <span class="rc-brand-pill">ROOFING RATE CARD</span>
-                                </div>
-                                <h4 class="rc-title" id="card-product-display">{{ preview.product }}</h4>
-                                <div class="text-white-50" style="font-size: 0.68rem;">
-                                    Color Coated Profile Sheets
-                                </div>
+                                <h4 class="rc-title mb-0" id="card-product-display">{{ preview.product }}</h4>
                             </div>
                             <div class="text-end">
-                                <span class="badge bg-warning text-dark fw-bold px-2 py-0.5" style="font-size: 0.7rem;">
+                                <span class="badge bg-warning text-dark fw-bold px-2 py-0.5" style="font-size: 0.72rem;">
                                     <i class="bi bi-calendar3 me-1"></i> <span id="card-date-display">{{ preview.date }}</span>
                                 </span>
-                                <div class="text-white-50" style="font-size: 0.65rem; margin-top: 2px;">
-                                    REF: <span id="card-ref-code" class="text-info fw-bold">RC-{{ preview.product|upper|slice:":3" }}-{{ preview.thickness }}</span>
-                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Technical Specifications Strip (2x2 Clean Badges) -->
+                    <!-- Technical Specifications: 4 Individual Boxes (2x2) + Summary Strip -->
                     <div class="rc-meta-strip">
                         <div class="row g-1 text-center">
+                            <!-- Box 1: Thickness -->
                             <div class="col-6">
                                 <div class="rc-meta-box">
-                                    <span class="rc-meta-label d-block">Thickness & Weight</span>
-                                    <span class="rc-meta-value"><span id="card-thickness-display">{{ preview.thickness }}</span> mm • <span id="card-weight-display">{{ preview.weight_10ft }}</span> kg</span>
+                                    <span class="rc-meta-label d-block">Thickness</span>
+                                    <span class="rc-meta-value"><span id="card-thickness-display">{{ preview.thickness }}</span> mm</span>
                                 </div>
                             </div>
+                            <!-- Box 2: 10-ft Weight -->
                             <div class="col-6">
                                 <div class="rc-meta-box">
-                                    <span class="rc-meta-label d-block">Landing Rate (18% GST)</span>
+                                    <span class="rc-meta-label d-block">10-ft Weight</span>
+                                    <span class="rc-meta-value"><span id="card-weight-display">{{ preview.weight_10ft }}</span> kg</span>
+                                </div>
+                            </div>
+                            <!-- Box 3: Basic Rate (Excl. GST) -->
+                            <div class="col-6 mt-1">
+                                <div class="rc-meta-box">
+                                    <span class="rc-meta-label d-block">Basic Rate (Excl. GST)</span>
+                                    <span class="rc-meta-value">₹<span id="card-basic-display">{{ preview.landing_rate }}</span>/kg</span>
+                                </div>
+                            </div>
+                            <!-- Box 4: Landing Rate (+18% GST) -->
+                            <div class="col-6 mt-1">
+                                <div class="rc-meta-box">
+                                    <span class="rc-meta-label d-block">Landing Rate (+18% GST)</span>
                                     <span class="rc-meta-value highlight">₹<span id="card-landing-display">{{ preview.rate_incl_gst }}</span>/kg</span>
                                 </div>
                             </div>
+                            <!-- Summary Bar: Base Cost & Coverage (Sq.Ft / Ton) -->
                             <div class="col-12 mt-1">
                                 <div class="rc-meta-box py-1 bg-light border d-flex justify-content-around align-items-center">
                                     <div>
@@ -189,15 +197,15 @@
                                         <strong class="text-success" style="font-size: 0.85rem;">₹<span id="card-basecost-display">{{ preview.cost_per_sqft }}</span> / Sq.Ft</strong>
                                     </div>
                                     <div class="border-start ps-2">
-                                        <span class="text-muted small" style="font-size: 0.65rem;">Sheets/Ton: </span>
-                                        <strong class="text-dark" style="font-size: 0.85rem;"><span id="card-sheets-display">{{ preview.sheets_per_ton }}</span> pcs</strong>
+                                        <span class="text-muted small" style="font-size: 0.65rem;">Coverage (Sq.Ft / Ton): </span>
+                                        <strong class="text-dark" style="font-size: 0.85rem;"><span id="card-sqft-display">{{ preview.sqft_per_ton }}</span> Sq.Ft</strong>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- ALL 10 MARGIN TIERS IN A CLEAN 4-COLUMN TABLE (NO REPEATED 'MARGIN' TEXT) -->
+                    <!-- ALL 10 MARGIN TIERS IN A CLEAN 4-COLUMN TABLE -->
                     <div class="tier-table-container">
                         <table class="tier-card-table">
                             <thead>
@@ -221,22 +229,6 @@
                                 {% endfor %}
                             </tbody>
                         </table>
-                    </div>
-
-                    <!-- Compact Footer Strip -->
-                    <div class="rc-footer-strip">
-                        <div class="d-flex justify-content-between align-items-center mb-0.5">
-                            <div>
-                                <i class="bi bi-box-seam text-secondary me-1"></i>Ton Cost: <strong>₹<span id="card-tonrate-display">{{ preview.ton_rate }}</span></strong>
-                            </div>
-                            <div>
-                                Coverage: <strong><span id="card-sqft-display">{{ preview.sqft_per_ton }}</span> Sq.Ft</strong>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center border-top pt-1 text-muted" style="font-size: 0.62rem;">
-                            <span>Commercial Quotation • Valid as per coil rates</span>
-                            <span class="fw-bold text-dark">Pro Roofing Calc</span>
-                        </div>
                     </div>
 
                 </div>
@@ -280,10 +272,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const cardDateDisplay = document.getElementById('card-date-display');
     const cardThicknessDisplay = document.getElementById('card-thickness-display');
     const cardWeightDisplay = document.getElementById('card-weight-display');
+    const cardBasicDisplay = document.getElementById('card-basic-display');
     const cardLandingDisplay = document.getElementById('card-landing-display');
     const cardBaseCostDisplay = document.getElementById('card-basecost-display');
-    const cardSheetsDisplay = document.getElementById('card-sheets-display');
     const cardSqftDisplay = document.getElementById('card-sqft-display');
+    const cardSheetsDisplay = document.getElementById('card-sheets-display');
     const cardTonRateDisplay = document.getElementById('card-tonrate-display');
     const cardRefCode = document.getElementById('card-ref-code');
     const spinnerOverlay = document.getElementById('spinner-overlay');
@@ -325,8 +318,11 @@ document.addEventListener('DOMContentLoaded', function () {
         cardThicknessDisplay.textContent = thickness.toFixed(2);
         const weightDecimals = (weight10ft.toString().split('.')[1] || '').length;
         cardWeightDisplay.textContent = weightDecimals > 2 ? weight10ft.toString() : weight10ft.toFixed(2);
-        const refProd = product.replace(/[^a-zA-Z0-9]/g, '').substring(0, 3).toUpperCase() || 'RC';
-        cardRefCode.textContent = `RC-${refProd}-${thickness.toFixed(2)}`;
+        if (cardBasicDisplay) cardBasicDisplay.textContent = basicRate.toFixed(2);
+        if (cardRefCode) {
+            const refProd = product.replace(/[^a-zA-Z0-9]/g, '').substring(0, 3).toUpperCase() || 'RC';
+            cardRefCode.textContent = `RC-${refProd}-${thickness.toFixed(2)}`;
+        }
 
         if (weight10ft <= 0 || basicRate <= 0) {
             return;
@@ -348,11 +344,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const costPerSqft = sqftPerTon > 0 ? (tonRate / sqftPerTon) : 0;
 
         // Update displays
-        cardLandingDisplay.textContent = rateInclGst.toFixed(2);
-        cardBaseCostDisplay.textContent = costPerSqft.toFixed(2);
-        cardSheetsDisplay.textContent = sheetsPerTon.toFixed(1);
-        cardSqftDisplay.textContent = sqftPerTon.toFixed(1);
-        cardTonRateDisplay.textContent = tonRate.toLocaleString('en-IN', { maximumFractionDigits: 0 });
+        if (cardBasicDisplay) cardBasicDisplay.textContent = basicRate.toFixed(2);
+        if (cardLandingDisplay) cardLandingDisplay.textContent = rateInclGst.toFixed(2);
+        if (cardBaseCostDisplay) cardBaseCostDisplay.textContent = costPerSqft.toFixed(2);
+        if (cardSqftDisplay) cardSqftDisplay.textContent = sqftPerTon.toFixed(1);
+        if (cardSheetsDisplay) cardSheetsDisplay.textContent = sheetsPerTon.toFixed(1);
+        if (cardTonRateDisplay) cardTonRateDisplay.textContent = tonRate.toLocaleString('en-IN', { maximumFractionDigits: 0 });
 
         // 6. Target Selling Rate Tiers: (ton_rate + (M * 1000)) / sqft_per_ton
         MARGIN_TIERS.forEach(margin => {
@@ -438,11 +435,12 @@ document.addEventListener('DOMContentLoaded', function () {
         btnCopyCard.addEventListener('click', () => {
             const product = inputProduct.value.trim() || 'Roofing';
             const thickness = inputThickness.value;
+            const basic = cardBasicDisplay ? cardBasicDisplay.textContent : inputLandingRate.value;
             const landing = cardLandingDisplay.textContent;
             const costSqft = cardBaseCostDisplay.textContent;
             const dateVal = cardDateDisplay.textContent;
             
-            let text = `*ROOFING RATE CARD - ${product} (${thickness}mm)*\nDate: ${dateVal}\nLanding Cost: ₹${landing}/kg (Incl. 18% GST)\nBase Cost: ₹${costSqft}/Sq.Ft\n\n*Target Selling Rates:*\n`;
+            let text = `*${product} (${thickness}mm)*\nDate: ${dateVal}\nBasic Rate: ₹${basic}/kg (Excl. GST)\nLanding Rate: ₹${landing}/kg (+18% GST)\nBase Cost: ₹${costSqft}/Sq.Ft\n\n*Target Selling Rates:*\n`;
             MARGIN_TIERS.forEach(m => {
                 const cell = document.querySelector(`.tier-val[data-margin="${m}"]`);
                 if (cell) {

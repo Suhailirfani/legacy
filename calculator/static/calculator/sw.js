@@ -1,6 +1,6 @@
 // Roofing Calculator Service Worker
-// Version 7: Unified Calculate & Auto-Save
-const CACHE_NAME = 'roofing-calc-v7';
+// Version 8: Refined Rate Card Design
+const CACHE_NAME = 'roofing-calc-v8';
 const STATIC_ASSETS = [
   '/manifest.json',
   '/static/calculator/manifest.json',

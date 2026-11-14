@@ -1,6 +1,6 @@
 // Roofing Calculator Service Worker
-// Version 11: Seamless blended header design and responsive styling
-const CACHE_NAME = 'roofing-calc-v11';
+// Version 12: Footer single line for Base Cost and Coverage
+const CACHE_NAME = 'roofing-calc-v12';
 const STATIC_ASSETS = [
   '/manifest.json',
   '/static/calculator/manifest.json',

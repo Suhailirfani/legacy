@@ -158,6 +158,40 @@
                         </div>
                     </div>
 
+                    <!-- Technical Specifications: 4 Individual Boxes (2x2) -->
+                    <div class="rc-meta-strip">
+                        <div class="row g-1 text-center">
+                            <!-- Box 1: Thickness -->
+                            <div class="col-6">
+                                <div class="rc-meta-box">
+                                    <span class="rc-meta-label d-block">Thickness</span>
+                                    <span class="rc-meta-value"><span id="card-thickness-display">{{ preview.thickness }}</span> mm</span>
+                                </div>
+                            </div>
+                            <!-- Box 2: 10-ft Weight -->
+                            <div class="col-6">
+                                <div class="rc-meta-box">
+                                    <span class="rc-meta-label d-block">10-ft Weight</span>
+                                    <span class="rc-meta-value"><span id="card-weight-display">{{ preview.weight_10ft }}</span> kg</span>
+                                </div>
+                            </div>
+                            <!-- Box 3: Basic Rate (Excl. GST) -->
+                            <div class="col-6 mt-1">
+                                <div class="rc-meta-box">
+                                    <span class="rc-meta-label d-block">Basic Rate (Excl. GST)</span>
+                                    <span class="rc-meta-value">₹<span id="card-basic-display">{{ preview.landing_rate }}</span>/kg</span>
+                                </div>
+                            </div>
+                            <!-- Box 4: Landing Rate (+18% GST) -->
+                            <div class="col-6 mt-1">
+                                <div class="rc-meta-box">
+                                    <span class="rc-meta-label d-block">Landing Rate (+18% GST)</span>
+                                    <span class="rc-meta-value highlight">₹<span id="card-landing-display">{{ preview.rate_incl_gst }}</span>/kg</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- ALL 10 MARGIN TIERS IN A CLEAN 4-COLUMN TABLE -->
                     <div class="tier-table-container">
                         <table class="tier-card-table">
@@ -182,6 +216,19 @@
                                 {% endfor %}
                             </tbody>
                         </table>
+                    </div>
+
+                    <!-- Bottom Info Line: Base Cost & Coverage (Simple Line, No Boxes) -->
+                    <div class="rc-footer-strip d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-muted fw-semibold">Base Cost:</span>
+                            <strong class="text-dark ms-1">₹<span id="card-basecost-display">{{ preview.cost_per_sqft }}</span> / Sq.Ft</strong>
+                        </div>
+                        <div class="vr my-0.5" style="height: 14px; opacity: 0.25;"></div>
+                        <div>
+                            <span class="text-muted fw-semibold">Coverage:</span>
+                            <strong class="text-dark ms-1"><span id="card-sqft-display">{{ preview.sqft_per_ton }}</span> Sq.Ft / Ton</strong>
+                        </div>
                     </div>
 
                 </div>
@@ -397,9 +444,12 @@ document.addEventListener('DOMContentLoaded', function () {
         btnCopyCard.addEventListener('click', () => {
             const product = inputProduct.value.trim() || 'Roofing';
             const thickness = inputThickness.value;
+            const basic = cardBasicDisplay ? cardBasicDisplay.textContent : inputLandingRate.value;
+            const landing = cardLandingDisplay ? cardLandingDisplay.textContent : '';
+            const costSqft = cardBaseCostDisplay ? cardBaseCostDisplay.textContent : '';
             const dateVal = cardDateDisplay ? cardDateDisplay.textContent : formatDateToDDMMYYYY(inputDate.value);
             
-            let text = `*${product} (${thickness}mm)*\nDate: ${dateVal}\n\n*Target Selling Rates:*\n`;
+            let text = `*${product} (${thickness}mm)*\nDate: ${dateVal}\nBasic Rate: ₹${basic}/kg (Excl. GST)\nLanding Rate: ₹${landing}/kg (+18% GST)\nBase Cost: ₹${costSqft}/Sq.Ft\n\n*Target Selling Rates:*\n`;
             MARGIN_TIERS.forEach(m => {
                 const cell = document.querySelector(`.tier-val[data-margin="${m}"]`);
                 if (cell) {

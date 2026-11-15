@@ -1,6 +1,6 @@
 // Roofing Calculator Service Worker
-// Version 13: We Five Group official favicon, app icons and URL icons
-const CACHE_NAME = 'roofing-calc-v13';
+// Version 14: Ultra-clean card without logos or metadata fields
+const CACHE_NAME = 'roofing-calc-v14';
 const STATIC_ASSETS = [
   '/manifest.json',
   '/static/calculator/manifest.json',

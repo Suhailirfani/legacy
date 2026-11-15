@@ -1,12 +1,20 @@
 // Roofing Calculator Service Worker
-// Version 12: Footer single line for Base Cost and Coverage
-const CACHE_NAME = 'roofing-calc-v12';
+// Version 13: We Five Group official favicon, app icons and URL icons
+const CACHE_NAME = 'roofing-calc-v13';
 const STATIC_ASSETS = [
   '/manifest.json',
   '/static/calculator/manifest.json',
+  '/favicon.ico',
+  '/static/calculator/icons/favicon.ico',
+  '/static/calculator/icons/favicon-16x16.png',
+  '/static/calculator/icons/favicon-32x32.png',
+  '/static/calculator/icons/favicon-48x48.png',
   '/static/calculator/icons/icon-64.png',
   '/static/calculator/icons/icon-192.png',
   '/static/calculator/icons/icon-512.png',
+  '/static/calculator/icons/apple-touch-icon.png',
+  '/static/calculator/icons/icon-maskable-192.png',
+  '/static/calculator/icons/icon-maskable-512.png',
   '/static/calculator/img/logo_wefive_group.png',
   '/static/calculator/img/logo_legacy.png',
   '/static/calculator/img/logo_halten.png',

@@ -113,3 +113,9 @@ class ViewsAndApiTest(TestCase):
         self.assertEqual(response['Content-Type'], 'application/javascript')
         self.assertEqual(response['Service-Worker-Allowed'], '/')
         self.assertIn('roofing-calc', response.content.decode('utf-8'))
+
+    def test_favicon_ico_view(self):
+        response = self.client.get('/favicon.ico')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'image/x-icon')
+        self.assertGreater(len(response.content), 0)

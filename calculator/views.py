@@ -278,3 +278,16 @@ def service_worker_view(request):
     response['Pragma'] = 'no-cache'
     response['Expires'] = '0'
     return response
+
+
+def favicon_view(request):
+    """
+    Serve favicon.ico directly at domain root (/favicon.ico).
+    """
+    icon_path = os.path.join(settings.BASE_DIR, 'calculator', 'static', 'calculator', 'icons', 'favicon.ico')
+    try:
+        with open(icon_path, 'rb') as f:
+            return HttpResponse(f.read(), content_type='image/x-icon')
+    except Exception:
+        raise Http404("Favicon not found")
+

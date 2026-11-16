@@ -317,20 +317,22 @@ document.addEventListener('DOMContentLoaded', function () {
     function performRealtimeCalculation() {
         const product = inputProduct.value.trim() || 'PRO ROOF';
         const dateVal = inputDate.value || new Date().toISOString().split('T')[0];
-        const thickness = parseFloat(inputThickness.value) || 0;
-        const weight10ft = parseFloat(inputWeight.value) || 0;
-        const basicRate = parseFloat(inputLandingRate.value) || 0;
+        const rawThickness = inputThickness.value.trim();
+        const thickness = parseFloat(rawThickness) || 0;
+        const rawWeight = inputWeight.value.trim();
+        const weight10ft = parseFloat(rawWeight) || 0;
+        const rawBasic = inputLandingRate.value.trim();
+        const basicRate = parseFloat(rawBasic) || 0;
 
-        // Update card header labels
+        // Update card header labels (preserve exact typed numbers including trailing zeros like 8.450)
         if (cardProductDisplay) cardProductDisplay.textContent = product;
         if (cardDateDisplay) cardDateDisplay.textContent = formatDateToDDMMYYYY(dateVal);
-        if (cardThicknessDisplay) cardThicknessDisplay.textContent = thickness.toFixed(2);
-        const weightDecimals = (weight10ft.toString().split('.')[1] || '').length;
-        if (cardWeightDisplay) cardWeightDisplay.textContent = weightDecimals > 2 ? weight10ft.toString() : weight10ft.toFixed(2);
-        if (cardBasicDisplay) cardBasicDisplay.textContent = basicRate.toFixed(2);
+        if (cardThicknessDisplay) cardThicknessDisplay.textContent = rawThickness || (thickness > 0 ? thickness.toString() : '0');
+        if (cardWeightDisplay) cardWeightDisplay.textContent = rawWeight || (weight10ft > 0 ? weight10ft.toString() : '0');
+        if (cardBasicDisplay) cardBasicDisplay.textContent = rawBasic || (basicRate > 0 ? basicRate.toFixed(2) : '0.00');
         if (cardRefCode) {
             const refProd = product.replace(/[^a-zA-Z0-9]/g, '').substring(0, 3).toUpperCase() || 'RC';
-            cardRefCode.textContent = `RC-${refProd}-${thickness.toFixed(2)}`;
+            cardRefCode.textContent = `RC-${refProd}-${rawThickness || thickness.toFixed(2)}`;
         }
 
         if (weight10ft <= 0 || basicRate <= 0) {

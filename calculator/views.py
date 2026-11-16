@@ -44,12 +44,14 @@ def dashboard_view(request):
             target_calc = RateCalculation.objects.get(pk=load_id)
             form = RateCalculationForm(instance=target_calc)
             tier_list = target_calc.get_tier_list()
+            raw_w = request.GET.get('w')
+            raw_th = request.GET.get('th')
             preview_data = {
                 'id': target_calc.id,
                 'date': target_calc.date.strftime('%d-%m-%Y'),
                 'product': target_calc.product,
-                'thickness': float(target_calc.thickness),
-                'weight_10ft': target_calc.weight_10ft,
+                'thickness': raw_th if raw_th else target_calc.thickness,
+                'weight_10ft': raw_w if raw_w else target_calc.weight_10ft,
                 'landing_rate': target_calc.landing_rate,
                 'rate_incl_gst': target_calc.rate_incl_gst,
                 'ton_rate': target_calc.ton_rate,
@@ -63,6 +65,10 @@ def dashboard_view(request):
                 'tier_pairs': make_tier_pairs(tier_list),
                 'is_saved': True,
             }
+            if raw_w:
+                form.initial['weight_10ft'] = raw_w
+            if raw_th:
+                form.initial['thickness'] = raw_th
             if not request.GET.get('saved'):
                 messages.info(request, f"Loaded saved calculation for '{target_calc.product}' ({target_calc.thickness}mm).")
         except RateCalculation.DoesNotExist:
@@ -76,7 +82,14 @@ def dashboard_view(request):
                 # Automatically save calculation to database when calculate button is clicked
                 instance = form.save()
                 messages.success(request, f"Rate card for '{instance.product}' ({instance.thickness}mm) calculated & saved to records!")
-                return redirect(f"/?load={instance.id}&saved=1")
+                raw_w = request.POST.get('weight_10ft', '').strip()
+                raw_th = request.POST.get('thickness', '').strip()
+                extra_params = ""
+                if raw_w:
+                    extra_params += f"&w={raw_w}"
+                if raw_th:
+                    extra_params += f"&th={raw_th}"
+                return redirect(f"/?load={instance.id}&saved=1{extra_params}")
             except Exception as e:
                 messages.error(request, f"Calculation error: {str(e)}")
 

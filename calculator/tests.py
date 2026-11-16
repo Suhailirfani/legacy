@@ -114,6 +114,21 @@ class ViewsAndApiTest(TestCase):
         self.assertEqual(response['Service-Worker-Allowed'], '/')
         self.assertIn('roofing-calc', response.content.decode('utf-8'))
 
+    def test_dashboard_post_preserves_trailing_zeros(self):
+        response = self.client.post(reverse('dashboard'), data={
+            'product': 'TrailingZero Test',
+            'thickness': '0.35',
+            'weight_10ft': '8.450',
+            'landing_rate': '75.00',
+            'date': '2026-11-16',
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('w=8.450', response.url)
+        # Follow redirect and verify 8.450 is rendered in the card and form
+        follow_resp = self.client.get(response.url)
+        self.assertEqual(follow_resp.status_code, 200)
+        self.assertContains(follow_resp, '8.450')
+
     def test_favicon_ico_view(self):
         response = self.client.get('/favicon.ico')
         self.assertEqual(response.status_code, 200)

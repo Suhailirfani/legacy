@@ -1,6 +1,6 @@
 // Roofing Calculator Service Worker
-// Version 15: Restored 4 specification boxes and bottom cost/coverage strip without logos in card
-const CACHE_NAME = 'roofing-calc-v15';
+// Version 16: Preserve user input trailing decimal zeros in card
+const CACHE_NAME = 'roofing-calc-v16';
 const STATIC_ASSETS = [
   '/manifest.json',
   '/static/calculator/manifest.json',
